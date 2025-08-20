@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YouTube</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e0f12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="icons/icon-192.png" alt="" class="logo">
+      <span class="brand-text">YouTube</span>
+    </div>
+    <button id="openSettings" aria-label="Impostazioni">⚙️</button>
+  </header>
+
+  <main>
+    <section id="inputSection">
+      <label for="videoUrl">Incolla qui un link YouTube (es. https://www.youtube.com/watch?v=...)</label>
+      <div class="row">
+        <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX" autocomplete="off">
+        <button id="loadBtn">Carica</button>
+      </div>
+      <p class="hint">Il video verrà riprodotto <b>solo</b> se il canale supera i filtri impostati dal genitore.</p>
+    </section>
+
+    <section id="status">
+      <div id="statusMsg" role="status" aria-live="polite"></div>
+    </section>
+
+    <section id="playerSection">
+      <div class="player-wrap">
+        <iframe id="ytPlayer" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" id="settingsForm">
+      <h2>Impostazioni genitore</h2>
+      <div id="lockPane">
+        <p>Inserisci PIN genitore per modificare le impostazioni.</p>
+        <input type="password" id="pinInput" inputmode="numeric" minlength="4" maxlength="12" placeholder="PIN">
+        <div class="row right">
+          <button id="unlockBtn">Sblocca</button>
+          <button value="cancel">Chiudi</button>
+        </div>
+      </div>
+
+      <div id="settingsPane" hidden>
+        <fieldset>
+          <legend>Modalità filtro</legend>
+          <label><input type="radio" name="mode" value="blacklist"> Blacklist (blocca ciò che corrisponde)</label>
+          <label><input type="radio" name="mode" value="whitelist"> Whitelist (permetti solo corrispondenze)</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Voci lista canali</legend>
+          <p class="hint small">Ogni riga può essere un <b>nome canale</b>, un <b>handle</b> (es. <code>@nome</code>) o parte dell'URL canale (es. <code>UCxxxx</code> o <code>youtube.com/@nome</code>).</p>
+          <div class="row">
+            <textarea id="patterns" rows="8" placeholder="@canale-consentito
+Lion
+UCXXXXXXXXXXXXXXX"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>PIN genitore</legend>
+          <div class="row">
+            <input type="password" id="newPin" minlength="4" maxlength="12" placeholder="Nuovo PIN (opzionale)">
+          </div>
+        </fieldset>
+
+        <div class="row right">
+          <button id="saveBtn">Salva</button>
+          <button id="lockBtn">Blocca</button>
+          <button value="cancel">Chiudi</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <footer>
+    <p style="opacity:.7">Questa non è l'app ufficiale YouTube. È un player con <b>filtro canali</b> per uso familiare.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>
